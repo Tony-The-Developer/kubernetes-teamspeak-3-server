@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: teamspeak-db
+    tier: teamspeak
+  name: teamspeak-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamspeak-db
+      tier: teamspeak
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: teamspeak-db
+        tier: teamspeak
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: teamspeak
+            - name: MYSQL_ROOT_PASSWORD
+              value: teamspeak
+          image: mariadb
+          name: teamspeak-db
+          resources: {}
+          volumeMounts:
+            - name: teamspeak-pvc
+              mountPath: /var/lib/mysql
+      restartPolicy: Always
+      volumes:
+        - name: teamspeak-pvc
+          persistentVolumeClaim:
+            claimName: teamspeak-pvc
+      securityContext:
+        runAsUser: 0
+        fsGroup: 1234
+
+status: {}
